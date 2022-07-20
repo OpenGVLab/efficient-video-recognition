@@ -1,0 +1,7 @@
+__pycache__
+*.py[cod]
+*$py.class
+
+runs/
+
+video_dataset/io_internal.py
