@@ -1,8 +1,8 @@
-## Frozen CLIP models are Efficient Video Learners
+# Frozen CLIP models are Efficient Video Learners
 
 This is the official implementation of the paper [Frozen CLIP models are Efficient Video Learners](https://arxiv.org/abs/xxxx.xxxxx)
 
-### Introduction
+## Introduction
 
 The overall architecture of the EVL framework includes a trainable Transformer decoder, trainable local temporal modules and a pretrained, fixed image backbone
 (CLIP is used for instance).
@@ -16,7 +16,7 @@ are as follows
 
 <img src="figs/k400.png" height="300">
 
-### Installation
+## Installation
 
 We tested the released code with the following conda environment
 
@@ -24,7 +24,7 @@ We tested the released code with the following conda environment
 conda create -n pt1.12.0cu11.6_official -c pytorch -c conda-forge pytorch=1.12.0 cudatoolkit=11.6 torchvision av
 ```
 
-### Data Preparation
+## Data Preparation
 
 We expect that `--train_list_path` and `--val_list_path` command line arguments to be a data list file of the following format
 ```
@@ -39,12 +39,12 @@ where `<path_i>` points to a video file, and `<label_i>` is an integer between `
 Additionally, `<path_i>` might be a relative path when `--data_root` is specified, and the actual path will be
 relative to the path passed as `--data_root`.
 
-### Backbone Preparation
+## Backbone Preparation
 
 CLIP weights need to be downloaded from [CLIP official repo](https://github.com/openai/CLIP/blob/d50d76daa670286dd6cacf3bcd80b5e4823fc8e1/clip/clip.py#L30)
 and passed to the `--backbone_path` command line argument.
 
-### Script Usage
+## Script Usage
 
 Training and evaliation scripts are provided in the scripts folder.
 Scripts should be ready to run once the environment is setup and 
@@ -52,7 +52,7 @@ Scripts should be ready to run once the environment is setup and
 
 For other command line arguments please see the help message for usage.
 
-### Kinetics-400 Main Results
+## Kinetics-400 Main Results
 
 This is a re-implementation for open-source use. Checkpoints and scripts will be released soon.
 
@@ -66,7 +66,7 @@ This is a re-implementation for open-source use. Checkpoints and scripts will be
 | ViT-L/14 | 4 | 32 x 8 | 87.3 | 97.7 | | |
 | ViT-L/14 (336px) | 4 | 32 x 8 | 87.7 | 97.8 | | |
 
-### Data Loading Speed
+## Data Loading Speed
 
 As the training process is fast, video frames are consumed at a very high rate.
 For easier installation, the current version uses PyTorch-builtin data loaders.
@@ -76,6 +76,6 @@ The model accuracy should not be affected.
 Our internal data loader is pure C++-based and does not bottleneck training by much on a machine with 2x Xeon Gold 6148 CPUs and 4x V100 GPUs.
 
 
-### Acknowledgements
+## Acknowledgements
 
 The data loader code is modified from [PySlowFast](https://github.com/facebookresearch/SlowFast). Thanks for their awesome work!
