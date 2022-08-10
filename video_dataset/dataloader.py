@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
-from typing import Callable
+from typing import Dict
 
 import torch
 import torch.distributed as dist
@@ -56,7 +56,7 @@ def setup_arg_parser(parser: argparse.ArgumentParser):
     parser.set_defaults(mirror=True)
                         
 
-def _parse_mean_and_std(args: argparse.Namespace) -> dict[str, torch.Tensor]:
+def _parse_mean_and_std(args: argparse.Namespace) -> Dict[str, torch.Tensor]:
     def parse_mean_or_std(arg, default_value):
         if arg is None:
             return torch.Tensor([default_value] * 3)

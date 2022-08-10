@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
 import os, sys
+from typing import Dict
 
 import torch
 
 __all__ = ['weight_loader_fn_dict']
 
-def load_weights_clip(load_path: str) -> dict[str, torch.Tensor]:
+def load_weights_clip(load_path: str) -> Dict[str, torch.Tensor]:
     clip_model = torch.jit.load(load_path, map_location='cpu')
     clip_model = clip_model.visual
     src_state_dict = clip_model.state_dict()

@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
 import os, sys
-from typing import Iterable, Optional
+from typing import Optional
 import av
+import io
 import numpy as np
 
 import torch
@@ -55,15 +56,14 @@ class VideoDataset(torch.utils.data.Dataset):
         container = av.open(path)
         frames = {}
         for frame in container.decode(video=0):
-            frames[frame.pts] = frame.to_rgb().to_ndarray()
+            frames[frame.pts] = frame
         container.close()
         frames = [frames[k] for k in sorted(frames.keys())]
-        frames = torch.as_tensor(np.stack(frames))
-        frames = frames.float() / 255.
 
         if self.random_sample:
-            frame_idx = self._random_sample_frame_idx(frames.size(0))
-            frames = frames[frame_idx]
+            frame_idx = self._random_sample_frame_idx(len(frames))
+            frames = [frames[x].to_rgb().to_ndarray() for x in frame_idx]
+            frames = torch.as_tensor(np.stack(frames)).float() / 255.
 
             if self.auto_augment is not None:
                 aug_transform = create_random_augment(
@@ -84,6 +84,10 @@ class VideoDataset(torch.utils.data.Dataset):
             )
             
         else:
+            frames = [x.to_rgb().to_ndarray() for x in frames]
+            frames = torch.as_tensor(np.stack(frames))
+            frames = frames.float() / 255.
+
             frames = (frames - self.mean) / self.std
             frames = frames.permute(3, 0, 1, 2) # C, T, H, W
             

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import math
+from typing import Dict, Iterable, List, Tuple
+import numpy as np
 
 import torch
 import torch.nn as nn
@@ -18,21 +19,21 @@ class TemporalCrossAttention(nn.Module):
 
     def __init__(
         self,
-        spatial_size: tuple[int, int] = (14, 14),
+        spatial_size: Tuple[int, int] = (14, 14),
         feature_dim: int = 768,
     ):
         super().__init__()
 
         self.spatial_size = spatial_size
 
-        w_size = math.prod([x * 2 - 1 for x in spatial_size])
+        w_size = np.prod([x * 2 - 1 for x in spatial_size])
         self.w1 = nn.Parameter(torch.zeros([w_size, feature_dim]))
         self.w2 = nn.Parameter(torch.zeros([w_size, feature_dim]))
 
-        idx_tensor = torch.zeros([math.prod(spatial_size) for _ in (0, 1)], dtype=torch.long)
-        for q in range(math.prod(spatial_size)):
+        idx_tensor = torch.zeros([np.prod(spatial_size) for _ in (0, 1)], dtype=torch.long)
+        for q in range(np.prod(spatial_size)):
             qi, qj = q // spatial_size[1], q % spatial_size[1]
-            for k in range(math.prod(spatial_size)):
+            for k in range(np.prod(spatial_size)):
                 ki, kj = k // spatial_size[1], k % spatial_size[1]
                 i_offs = qi - ki + spatial_size[0] - 1
                 j_offs = qj - kj + spatial_size[1] - 1
@@ -44,7 +45,7 @@ class TemporalCrossAttention(nn.Module):
         q, k = q[:, :, 1:], k[:, :, 1:] # remove cls token
 
         assert q.size() == k.size()
-        assert q.size(2) == math.prod(self.spatial_size)
+        assert q.size(2) == np.prod(self.spatial_size)
 
         attn = torch.einsum('ntqhd,ntkhd->ntqkh', q / (q.size(-1) ** 0.5), k)
         attn = attn.softmax(dim=-2).mean(dim=-1) # L, L, N, T
@@ -58,7 +59,7 @@ class TemporalCrossAttention(nn.Module):
 
     def forward(self, q: torch.Tensor, k: torch.Tensor):
         N, T, L, H, D = q.size()
-        assert L == math.prod(self.spatial_size) + 1
+        assert L == np.prod(self.spatial_size) + 1
 
         ret = torch.zeros([N, T, L, self.w1.size(-1)], device='cuda')
         ret[:, 1:, 1:, :] += self.forward_half(q[:, 1:, :, :, :], k[:, :-1, :, :, :], self.w1)
@@ -72,7 +73,7 @@ class EVLDecoder(nn.Module):
     def __init__(
         self,
         num_frames: int = 8,
-        spatial_size: tuple[int, int] = (14, 14),
+        spatial_size: Tuple[int, int] = (14, 14),
         num_layers: int = 4,
         in_feature_dim: int = 768,
         qkv_dim: int = 768,
@@ -100,7 +101,7 @@ class EVLDecoder(nn.Module):
             )
         if enable_temporal_pos_embed:
             self.temporal_pos_embed = nn.ParameterList(
-                [torch.zeros([num_frames, in_feature_dim]) for _ in range(num_layers)]
+                [nn.Parameter(torch.zeros([num_frames, in_feature_dim])) for _ in range(num_layers)]
             )
         if enable_temporal_cross_attention:
             self.cross_attention = nn.ModuleList(
@@ -114,7 +115,7 @@ class EVLDecoder(nn.Module):
         nn.init.normal_(self.cls_token, std=0.02)
 
 
-    def forward(self, in_features: list[dict[str, torch.Tensor]]):
+    def forward(self, in_features: List[Dict[str, torch.Tensor]]):
         N, T, L, C = in_features[0]['out'].size()
         assert len(in_features) == self.num_layers
         x = self.cls_token.view(1, 1, -1).repeat(N, 1, 1)

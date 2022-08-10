@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 from collections import OrderedDict
-import math
+import numpy as np
+from typing import Tuple
 
 import torch
 import torch.nn as nn
@@ -84,7 +85,7 @@ class PatchEmbed2D(nn.Module):
 
     def __init__(
         self,
-        patch_size: tuple[int, int] = (16, 16),
+        patch_size: Tuple[int, int] = (16, 16),
         in_channels: int = 3,
         embed_dim: int = 768,
     ):
@@ -93,7 +94,7 @@ class PatchEmbed2D(nn.Module):
         self.patch_size = patch_size
         self.in_channels = in_channels
 
-        self.proj = nn.Linear(math.prod(patch_size) * in_channels, embed_dim)
+        self.proj = nn.Linear(np.prod(patch_size) * in_channels, embed_dim)
 
 
     def _initialize_weights(self, x):
@@ -231,8 +232,8 @@ class VisionTransformer2D(nn.Module):
     def __init__(
         self,
         feature_dim: int = 768,
-        input_size: tuple[int, int] = (224, 224),
-        patch_size: tuple[int, int] = (16, 16),
+        input_size: Tuple[int, int] = (224, 224),
+        patch_size: Tuple[int, int] = (16, 16),
         num_heads: int = 12,
         num_layers: int = 12,
         mlp_factor: float = 4.0,
@@ -245,7 +246,7 @@ class VisionTransformer2D(nn.Module):
         self.return_all_features = return_all_features
         
         self.patch_embed = PatchEmbed2D(patch_size=patch_size, embed_dim=feature_dim)
-        self.num_patches = math.prod([x // y for x, y in zip(input_size, patch_size)]) + 1
+        self.num_patches = np.prod([x // y for x, y in zip(input_size, patch_size)]) + 1
 
         self.cls_token = nn.Parameter(torch.zeros([feature_dim]))
         self.pos_embed = nn.Parameter(torch.zeros([self.num_patches, feature_dim]))
