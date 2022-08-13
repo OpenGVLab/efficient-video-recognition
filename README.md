@@ -1,6 +1,15 @@
 # Frozen CLIP models are Efficient Video Learners
 
-This is the official implementation of the paper [Frozen CLIP models are Efficient Video Learners](https://arxiv.org/abs/xxxx.xxxxx)
+This is the official implementation of the paper [Frozen CLIP models are Efficient Video Learners](https://arxiv.org/abs/2208.03550)
+
+```
+@article{lin2022frozen,
+  title={Frozen CLIP Models are Efficient Video Learners},
+  author={Lin, Ziyi and Geng, Shijie and Zhang, Renrui and Gao, Peng and de Melo, Gerard and Wang, Xiaogang and Dai, Jifeng and Qiao, Yu and Li, Hongsheng},
+  journal={arXiv preprint arXiv:2208.03550},
+  year={2022}
+}
+```
 
 ## Introduction
 
@@ -38,6 +47,8 @@ where `<path_i>` points to a video file, and `<label_i>` is an integer between `
 
 Additionally, `<path_i>` might be a relative path when `--data_root` is specified, and the actual path will be
 relative to the path passed as `--data_root`.
+
+The class mappings in the open-source weights are provided at [Kinetics-400 class mappings](data/k400_class_mappings.json)
 
 ## Backbone Preparation
 

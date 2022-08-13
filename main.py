@@ -111,6 +111,7 @@ def main():
         enable_temporal_cross_attention=args.temporal_cross_attention,
         cls_dropout=args.cls_dropout,
         decoder_mlp_dropout=args.decoder_mlp_dropout,
+        num_frames=args.num_frames,
     )
     model.cuda()
     model = torch.nn.parallel.DistributedDataParallel(
