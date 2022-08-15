@@ -113,6 +113,7 @@ def main():
         decoder_mlp_dropout=args.decoder_mlp_dropout,
         num_frames=args.num_frames,
     )
+    print(model)
     model.cuda()
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[cuda_device_id], output_device=cuda_device_id,
@@ -125,9 +126,15 @@ def main():
 
     resume_step = checkpoint.resume_from_checkpoint(model, optimizer, lr_sched, loss_scaler, args)
 
-    if not args.eval_only:
-        train_loader = video_dataset.create_train_loader(args, resume_step=resume_step)
     val_loader = video_dataset.create_val_loader(args)
+    if args.eval_only:
+        print('Running in eval_only mode.')
+        model.eval()
+        evaluate(model, val_loader)
+        return
+    else:
+        assert args.train_list_path is not None, 'Train list path must be specified if not in eval_only mode.'
+        train_loader = video_dataset.create_train_loader(args, resume_step=resume_step)
 
     assert len(train_loader) == args.num_steps - resume_step
     batch_st, train_st = datetime.now(), datetime.now()
@@ -168,12 +175,12 @@ def main():
             loss_value, acc1, acc5 = sync_tensor.tolist()
 
             print(
-                f'batch_time: {(batch_ed - batch_st).total_seconds():.3f} '
-                f'data_time: {(data_ed - batch_st).total_seconds():.3f} '
-                f'ETA: {(batch_ed - train_st) / (i - resume_step + 1) * (args.num_steps - i - 1)} | '
-                f'lr: {optimizer.param_groups[0]["lr"]:.6f} '
+                f'batch_time: {(batch_ed - batch_st).total_seconds():.3f}  '
+                f'data_time: {(data_ed - batch_st).total_seconds():.3f}  '
+                f'ETA: {(batch_ed - train_st) / (i - resume_step + 1) * (args.num_steps - i - 1)}  |  '
+                f'lr: {optimizer.param_groups[0]["lr"]:.6f}  '
                 f'loss: {loss_value:.6f}' + (
-                    f' acc1: {acc1 * 100:.2f}% acc5: {acc5 * 100:.2f}%' if labels.dtype == torch.long else ''
+                    f'  acc1: {acc1 * 100:.2f}%  acc5: {acc5 * 100:.2f}%' if labels.dtype == torch.long else ''
                 )
             )
         
@@ -191,6 +198,7 @@ def main():
 
 def evaluate(model: torch.nn.Module, loader: torch.utils.data.DataLoader):
     tot, hit1, hit5 = 0, 0, 0
+    eval_st = datetime.now()
     for data, labels in loader:
         data, labels = data.cuda(), labels.cuda()
         assert data.size(0) == 1
@@ -204,6 +212,12 @@ def evaluate(model: torch.nn.Module, loader: torch.utils.data.DataLoader):
         tot += 1
         hit1 += (scores.topk(1)[1] == labels).sum().item()
         hit5 += (scores.topk(5)[1] == labels).sum().item()
+
+        if tot % 20 == 0:
+            print(f'[Evaluation] num_samples: {tot}  '
+                  f'ETA: {(datetime.now() - eval_st) / tot * (len(loader) - tot)}  '
+                  f'cumulative_acc1: {hit1 / tot * 100.:.2f}%  '
+                  f'cumulative_acc5: {hit5 / tot * 100.:.2f}%')
 
     sync_tensor = torch.LongTensor([tot, hit1, hit5]).cuda()
     dist.all_reduce(sync_tensor)

@@ -50,6 +50,11 @@ def resume_from_checkpoint(
     loss_scaler: torch.cuda.amp.grad_scaler.GradScaler,
     args: argparse.Namespace,
 ) -> int:
+    if args.pretrain is not None:
+        print(f'Loading pretrain model: {args.pretrain}')
+        ckpt = torch.load(args.pretrain, map_location='cpu')
+        print(model.load_state_dict(ckpt['model'], strict=False))
+
     # returns resume_step on successful resume, or 0 otherwise.
     if args.auto_resume and args.resume_path is None:
         _find_autoresume_path(args)
@@ -61,10 +66,14 @@ def resume_from_checkpoint(
         print(f'Resuming from checkpoint file {args.resume_path}')
         ckpt = torch.load(args.resume_path, map_location='cpu')
         model.load_state_dict(ckpt['model'], strict=True)
-        optimizer.load_state_dict(ckpt['optimizer'])
-        lr_sched.load_state_dict(ckpt['lr_sched'])
-        loss_scaler.load_state_dict(ckpt['loss_scaler'])
-        return ckpt['next_step']
+        if 'optimizer' in ckpt:
+            optimizer.load_state_dict(ckpt['optimizer'])
+            lr_sched.load_state_dict(ckpt['lr_sched'])
+            loss_scaler.load_state_dict(ckpt['loss_scaler'])
+            return ckpt['next_step']
+        else:
+            print('Optimizer state is NOT found in checkpoint.')
+            return 0
 
 
 def save_checkpoint(

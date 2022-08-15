@@ -30,7 +30,7 @@ are as follows
 We tested the released code with the following conda environment
 
 ```
-conda create -n pt1.12.0cu11.6_official -c pytorch -c conda-forge pytorch=1.12.0 cudatoolkit=11.6 torchvision av
+conda create -n pt1.9.0cu11.1_official -c pytorch -c conda-forge pytorch=1.9.0=py3.9_cuda11.1_cudnn8.0.5_0 cudatoolkit torchvision av
 ```
 
 ## Data Preparation
@@ -69,9 +69,9 @@ This is a re-implementation for open-source use. Checkpoints and scripts will be
 
 | Backbone | Decoder Layers | #frames x stride | top-1 | top-5 | Script | Model |
 | - | - | - | - | - | - | - |
-| ViT-B/16 | 4 | 8 x 16 | 82.9 | 95.7 | | |
-| ViT-B/16 | 4 | 16 x 16 | 83.6 | 96.3 | | |
-| ViT-B/16 | 4 | 32 x 8 | 84.2 | 96.6 | | |
+| ViT-B/16 | 4 | 8 x 16 | 82.9 | 95.7 | [script](scripts/train_k400_vitb16_8f_dec4x768.sh) | [google drive](https://drive.google.com/file/d/1DoGjvDdkJoSa9i-wq1lh6QoEZIa4xTB3/view?usp=sharing) |
+| ViT-B/16 | 4 | 16 x 16 | 83.6 | 96.3 | [script](scripts/train_k400_vitb16_16f_dec4x768.sh) | [google drive](https://drive.google.com/file/d/1dax4qUIOEI_QzYXv31J-87cDkonQetVQ/view?usp=sharing) |
+| ViT-B/16 | 4 | 32 x 8 | 84.2 | 96.6 | [script](scripts/train_k400_vitb16_32f_dec4x768.sh) | [google drive](https://drive.google.com/file/d/1fzFM5pD39Kfp8xRAJuWaXR9RALLmnoeU/view?usp=sharing) |
 | ViT-L/14 | 4 | 8 x 16 | 86.3 | 97.2 | | |
 | ViT-L/14 | 4 | 16 x 16 | 87.0 | 97.6 | | |
 | ViT-L/14 | 4 | 32 x 8 | 87.3 | 97.7 | | |
