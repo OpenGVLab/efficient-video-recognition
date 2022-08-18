@@ -65,15 +65,17 @@ For other command line arguments please see the help message for usage.
 
 ## Kinetics-400 Main Results
 
-This is a re-implementation for open-source use. Checkpoints and scripts will be released soon.
+This is a re-implementation for open-source use.
+We are still re-running some models, and their scripts, weights and logs will be released later.
+In the following table we report the re-run accuracy, which may be slightly different from the original paper (typically +/-0.1%)
 
-| Backbone | Decoder Layers | #frames x stride | top-1 | top-5 | Script | Model |
-| - | - | - | - | - | - | - |
-| ViT-B/16 | 4 | 8 x 16 | 82.9 | 95.7 | [script](scripts/train_k400_vitb16_8f_dec4x768.sh) | [google drive](https://drive.google.com/file/d/1DoGjvDdkJoSa9i-wq1lh6QoEZIa4xTB3/view?usp=sharing) |
-| ViT-B/16 | 4 | 16 x 16 | 83.6 | 96.3 | [script](scripts/train_k400_vitb16_16f_dec4x768.sh) | [google drive](https://drive.google.com/file/d/1dax4qUIOEI_QzYXv31J-87cDkonQetVQ/view?usp=sharing) |
-| ViT-B/16 | 4 | 32 x 8 | 84.2 | 96.6 | [script](scripts/train_k400_vitb16_32f_dec4x768.sh) | [google drive](https://drive.google.com/file/d/1fzFM5pD39Kfp8xRAJuWaXR9RALLmnoeU/view?usp=sharing) |
-| ViT-L/14 | 4 | 8 x 16 | 86.3 | 97.2 | | |
-| ViT-L/14 | 4 | 16 x 16 | 87.0 | 97.6 | | |
+| Backbone | Decoder Layers | #frames x stride | top-1 | top-5 | Script | Model | Log |
+| - | - | - | - | - | - | - | - |
+| ViT-B/16 | 4 | 8 x 16 | 82.8 | 95.8 | [script](scripts/train_k400_vitb16_8f_dec4x768.sh) | [google drive](https://drive.google.com/file/d/1DoGjvDdkJoSa9i-wq1lh6QoEZIa4xTB3/view?usp=sharing) | [google drive](https://drive.google.com/file/d/1-9vgsXMpnWBI9MxQV7SSQhkPfLomoYY3/view?usp=sharing) |
+| ViT-B/16 | 4 | 16 x 16 | 83.7 | 96.2 | [script](scripts/train_k400_vitb16_16f_dec4x768.sh) | [google drive](https://drive.google.com/file/d/1dax4qUIOEI_QzYXv31J-87cDkonQetVQ/view?usp=sharing) | [google drive](https://drive.google.com/file/d/1l2ivY28jUpwSmafQZvwtUo7tvm42i0PL/view?usp=sharing) |
+| ViT-B/16 | 4 | 32 x 8 | 84.3 | 96.6 | [script](scripts/train_k400_vitb16_32f_dec4x768.sh) | [google drive](https://drive.google.com/file/d/1fzFM5pD39Kfp8xRAJuWaXR9RALLmnoeU/view?usp=sharing) | [google drive](https://drive.google.com/file/d/1X1ZOdSCxXVeMpNhr_bviNKlRfJa5SMD7/view?usp=sharing) |
+| ViT-L/14 | 4 | 8 x 16 | 86.3 | 97.2 | [script](scripts/train_k400_vitl14_8f_dec4x1024.sh) | [google drive](https://drive.google.com/file/d/1AkdF4CkOVW2uiycCVqCxS397oYxNISAI/view?usp=sharing) | [google drive](https://drive.google.com/file/d/1OJFBmaE_tAwTzG-4i0CLQmhwGnN0psx1/view?usp=sharing) |
+| ViT-L/14 | 4 | 16 x 16 | 86.9 | 97.4 | [script](scripts/train_k400_vitl14_16f_dec4x1024.sh) | [google drive](https://drive.google.com/file/d/1CTV9geLD3HLWzByAQUOf_m0F_g2lE3rg/view?usp=sharing) | [google drive](https://drive.google.com/file/d/1a2iC4tQvjWFMI3UrEv2chuHwVrF6p9YF/view?usp=sharing) |
 | ViT-L/14 | 4 | 32 x 8 | 87.3 | 97.7 | | |
 | ViT-L/14 (336px) | 4 | 32 x 8 | 87.7 | 97.8 | | |
 
