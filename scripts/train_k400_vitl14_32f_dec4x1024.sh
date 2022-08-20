@@ -18,7 +18,7 @@ python -u -m torch.distributed.run --nproc_per_node 8 \
     --train_list_path /path/to/k400/train.txt \
     --val_list_path /path/to/k400/val.txt \
     --batch_size 256 \
-    --batch_split 2 \
+    --batch_split 4 \
     --auto_augment rand-m7-n4-mstd0.5-inc1 \
     --mean 0.48145466 0.4578275 0.40821073 \
     --std 0.26862954 0.26130258 0.27577711 \
